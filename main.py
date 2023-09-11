@@ -45,4 +45,45 @@ def xcite(product) :
     response.close()
 
 
-xcite(product)
+
+
+
+def eurika(product):
+   
+    eurika_url = f'https://www.eureka.com.kw/?instant_records%5Bquery%5D={product}'
+
+    response = requests.get(eurika_url, headers=headers)
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    product_span = soup.find_all('div', class_='caption')
+   
+    if product_span:
+     for product_spa in product_span:
+        title = product_spa.find('p', class_='sobrTxt')
+        price = product_spa.find('span', class_='mb5 borred')
+        parent = product_spa.parent
+        if title and price and parent:
+            title_text = title.text.strip()
+            price_text = price.text.strip()
+            parent_text = parent.name.strip()
+            
+            parent = product_spa.find_parent('a')
+            
+            if parent:
+                link = parent['href']
+                print("Product Title:", title_text)
+                print("Product Price:", price_text)
+                print("Product Link:", link)
+                print()
+                 
+            else:
+                print("Parent <a> tag not found")
+        else:
+            continue
+    else:
+     print("No products found on the page")
+
+
+    response.close()
+
+eurika(product)
