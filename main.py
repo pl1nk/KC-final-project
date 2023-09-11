@@ -1,18 +1,14 @@
 from bs4 import BeautifulSoup
 import requests
-import re
 
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0'
-}
 
-product = input("What do you want? ")
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0'}
+
+product = input("What do u want? ")
 
 xcite_url = f'https://www.xcite.com/search?q={product}&toggle%5BinStock%5D=true'
 
 response = requests.get(xcite_url, headers=headers)
-
-
 soup = BeautifulSoup(response.content, 'html.parser')
 
 
@@ -28,8 +24,8 @@ if product_divs:
             print("Product Title:", title_text)
             print("Product Price:", price_text)
         else:
-            print("Product title or price not found for one of the products.")
+            print("Product title or price not fond")
     else:
-        print("No products found on the page.")
+        print("No products found on the page")
 else:
-    print("Failed to retrieve the page. Status code:", response.status_code)
+    print("Failed to connect Status code:", response.status_code)
