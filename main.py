@@ -12,11 +12,11 @@ response = requests.get(xcite_url, headers=headers)
 soup = BeautifulSoup(response.content, 'html.parser')
 
 
-product_divs = soup.find_all('div', class_='ProductTile_wrapperXPYR3')
+product_divs = soup.find_all('div', class_='ProductTile_wrapper__XPYR3')
 
 if product_divs:
     for product_div in product_divs:
-        title = product_div.find('p', class_='ProductTile_productNameR9tA5')
+        title = product_div.find('p', class_='ProductTile_productName__R9tA5')
         price = product_div.find('span', class_='text-2xl text-functional-red-800 block mb-2')
         if title and price:
             title_text = title.text.strip()
