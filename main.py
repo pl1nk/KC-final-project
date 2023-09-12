@@ -14,6 +14,7 @@ def xcite(product) :
     soup = BeautifulSoup(response.content, 'html.parser')
 
     product_divs = soup.find_all('div', class_='ProductTile_wrapper__XPYR3')
+    cheapest_xcite_product = None
 
     if product_divs:
      for product_div in product_divs:
@@ -23,26 +24,29 @@ def xcite(product) :
         if title and price and parent:
             title_text = title.text.strip()
             price_text = price.text.strip()
+            price_text = price_text.replace(' KD', '').strip()  
             parent_text = parent.name.strip()
             
             parent = product_div.find_parent('a')
             
             if parent:
-                link = parent['href']
-                print("Product Title:", title_text)
-                print("Product Price:", price_text)
-                print("Product Link:", link)
-                print()
-                 
+                    link = parent['href']
+                    xcite_product = {
+                        'title': title_text,
+                        'price': price_text,
+                        'link': link,
+                    }
+                    if cheapest_xcite_product is None or float(price_text) < float(cheapest_xcite_product['price']):
+                        cheapest_xcite_product = xcite_product
             else:
                 print("Parent <a> tag not found")
         else:
             continue
-    else:
-     print("No products found on the page")
+    
+    return cheapest_xcite_product
 
 
-    response.close()
+    
 
 
 
@@ -71,39 +75,55 @@ def eurika(product):
     api_url = "https://5gphmaa239-dsn.algolia.net/1/indexes/*/queries"
 
     data = requests.post(api_url, params=params, json=payload).json()
+    cheapest_eurika_product = None
 
     for r in data["results"][0]["hits"]:
-        print(
-            f'{r["itmn"][:50]:<50} {r["clprcv"]:<10} https://www.eureka.com.kw/products/details/{r["objectID"]}'
-        )
+        title = r["itmn"]
+        price = r["clprcv"]
+        link = f'https://www.eureka.com.kw/products/details/{r["objectID"]}'
+
+        eurika_product = {
+            'title': title,
+            'price': price,
+            'link': link,
+        }
+
+        if cheapest_eurika_product is None or float(price) < float(cheapest_eurika_product['price']):
+            cheapest_eurika_product = eurika_product
+
+    return cheapest_eurika_product
 
 
-
-
-    # def blink(product):
-    # blink_url = f'https://www.blink.com.kw/en/Product/Products?searchText={product}&sortBy=&filterBy=cat:'
-    # response = requests.get(blink_url, headers=headers)
-    # soup = BeautifulSoup(response.content, 'html.parser')
-    # product_divs = soup.find_all('div', class_='items')
-
-    # for product_div in product_divs:
-    # title = product_div.find('span', class_='item_name noSwipe')
-    # price = product_div.find('span', class_='newprice alignright bluetext')
-    # link = product_div.find('a')['href']
-
-    # if title and price and link:
-    # title_text = title.get_text(strip=True)
-    # price_text = price.get_text(strip=True)
-    # print("Product Title:", title_text)
-    # print("Product Price:", price_text)
-    # print("Product Link:", link)
-    # print()
-    # else:
-    # print("Product information not found in one of the product divs.")
 
 
 xcite(product)
 eurika(product)
+cheapest_xcite = xcite(product)
+cheapest_eurika = eurika(product)
+
+if cheapest_xcite and cheapest_eurika:
+    if float(cheapest_xcite['price'].replace('KWD', '').strip()) < float(cheapest_eurika['price']):
+        print("Cheapest Product (Xcite):")
+        print("Title:", cheapest_xcite['title'])
+        print("Price:", cheapest_xcite['price'])
+        print("Link:", cheapest_xcite['link'])
+    else:
+        print("Cheapest Product (Eureka):")
+        print("Title:", cheapest_eurika['title'])
+        print("Price:", cheapest_eurika['price'])
+        print("Link:", cheapest_eurika['link'])
+elif cheapest_xcite:
+    print("Cheapest Product (Xcite):")
+    print("Title:", cheapest_xcite['title'])
+    print("Price:", cheapest_xcite['price'])
+    print("Link:", cheapest_xcite['link'])
+elif cheapest_eurika:
+    print("Cheapest Product (Eureka):")
+    print("Title:", cheapest_eurika['title'])
+    print("Price:", cheapest_eurika['price'])
+    print("Link:", cheapest_eurika['link'])
+else:
+    print("No products found on both websites.")
     
 
 
