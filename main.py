@@ -58,7 +58,7 @@ def eurika(product):
         "x-algolia-api-key": "3d7dbc330852592da244c87ae924a221",
     }
 
-    # Change the `query=charger` to put your query:
+    
     payload = {
         "requests": [
             {
@@ -80,26 +80,26 @@ def eurika(product):
 
 
 
-def blink(product):
-    blink_url = f'https://www.blink.com.kw/en/Product/Products?searchText={product}&sortBy=&filterBy=cat:'
-    response = requests.get(blink_url, headers=headers)
-    soup = BeautifulSoup(response.content, 'html.parser')
-    product_divs = soup.find_all('div', class_='items')
+    # def blink(product):
+    # blink_url = f'https://www.blink.com.kw/en/Product/Products?searchText={product}&sortBy=&filterBy=cat:'
+    # response = requests.get(blink_url, headers=headers)
+    # soup = BeautifulSoup(response.content, 'html.parser')
+    # product_divs = soup.find_all('div', class_='items')
 
-    for product_div in product_divs:
-        title = product_div.find('span', class_='item_name noSwipe')
-        price = product_div.find('span', class_='newprice alignright bluetext')
-        link = product_div.find('a')['href']
+    # for product_div in product_divs:
+    # title = product_div.find('span', class_='item_name noSwipe')
+    # price = product_div.find('span', class_='newprice alignright bluetext')
+    # link = product_div.find('a')['href']
 
-    if title and price and link:
-        title_text = title.get_text(strip=True)
-        price_text = price.get_text(strip=True)
-        print("Product Title:", title_text)
-        print("Product Price:", price_text)
-        print("Product Link:", link)
-        print()
-    else:
-        print("Product information not found in one of the product divs.")
+    # if title and price and link:
+    # title_text = title.get_text(strip=True)
+    # price_text = price.get_text(strip=True)
+    # print("Product Title:", title_text)
+    # print("Product Price:", price_text)
+    # print("Product Link:", link)
+    # print()
+    # else:
+    # print("Product information not found in one of the product divs.")
 
 
 xcite(product)
